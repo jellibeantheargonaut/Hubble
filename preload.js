@@ -2,12 +2,16 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('hubbleAPI', {
     openApp: async (appName) => {
-        ipcRenderer.send('open-app', appName);
+        return ipcRenderer.invoke('open-app', appName);
     },
-    closeApp: async () => {
-        ipcRenderer.send('close-app');
+    closeApp:  () => {
+        return ipcRenderer.invoke('close-app');
     },
-    getApps: async () => {
+    getApps:  () => {
         return ipcRenderer.invoke('get-apps');
-    }
+    },
+
+    search:  (query) => {
+        return ipcRenderer.invoke('search', query);
+    },
 });

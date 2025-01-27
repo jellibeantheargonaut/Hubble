@@ -2,8 +2,10 @@ const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain } = require('electr
 const fs = require('fs');
 const path = require('path');
 const icns = require('icns');
+const { execSync, exec, spawn } = require('child_process');
 const sanitize = require('sanitize-filename');
 
+const { searchSystem, createDB, createTable, createIndex  } = require('./indexer');
 let mainWindow;
 let tray = null;
 
@@ -12,31 +14,10 @@ let tray = null;
 // this function will be called only once
 // to create the cache
 //=============================================================
-const createCache = () => {
-    const cacheDir = path.join(__dirname, 'data', 'cache');
-    const cacheFilePath = path.join(cacheDir, 'index.txt');
-    // return if cache already exists
-    if (fs.existsSync(cacheFilePath)) {
-        console.log('[Main] Cache already exists');
-        return;
-    }
-    const collectFilePaths = (dir) => {
-        const sanitizedDir = sanitize(dir);
-        let command;
-        if (process.platform === 'darwin'){
-            command = `find ${sanitizedDir} -type f > ${cacheFilePath}`;
-            console.log('[Main] Creating cache for macOS ');
-        }
-        else {
-            command = `dir /s /b ${sanitizedDir} > ${cacheFilePath}`;
-            console.log('[Main] Creating cache for Windows ');
-        }
-        require('child_process').execSync(command);
-    };
-    collectFilePaths('~/');
-    console.log('[Main] Cache created');
-};
 
+
+// creating an index for the cache
+//=============================================================
 // function to open settings window from tray icon menu
 //const openSettings = () => {
 //    const settingsWindow = new BrowserWindow({
@@ -50,6 +31,7 @@ const createCache = () => {
 //    });
 //    //settingsWindow.loadFile('settings.html');
 //};
+const openSettings = () => { console.log('Settings opened'); };
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -81,7 +63,6 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
     createWindow();
-    setImmediate(createCache);
 });
 
 // IPC handles for the functions
@@ -100,13 +81,12 @@ ipcMain.handle('get-apps', (event) => {
 });
 
 ipcMain.handle('open-app', (event, app) => {
-    const appPath = path.join('/Applications', app + '.app');
+    const appPath = path.join('/Applications/', app + '.app');
     // open the app
-    require('child_process').exec(`open -a "${appPath}"`);
+    execSync("open -a '" + appPath + "'");
 });
 
-// IPC handles for index caching
-ipcMain.handle('reload-cache', (event) => {
-    fs.rmSync(path.join(__dirname, 'data', 'cache', 'index.txt'));
-    createCache();
+// ipc handle for searching the system
+ipcMain.handle('search', (event, query) => {
+    return searchSystem(query);
 });

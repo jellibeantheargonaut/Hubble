@@ -10,10 +10,7 @@ async function getAppsList(){
         const appNameContainer = document.createElement('div');
         appNameContainer.classList.add('default-item-text');
         const tag = document.createElement('p');
-        const icon = document.createElement('img');
-        icon.src = 'data/icon.png';
         tag.textContent = app.name;
-        appIconConatainer.appendChild(icon);
         appNameContainer.appendChild(tag);
         appContainer.appendChild(appIconConatainer);
         appContainer.appendChild(appNameContainer);
@@ -27,7 +24,9 @@ function selectApp(element) {
     const selectedItems = document.querySelectorAll('.selected');
     selectedItems.forEach(item => {
         item.classList.remove('selected');
-        document.removeEventListener('keydown', handleEnterKey);
+        setTimeout(() => {
+            document.removeEventListener('keydown', handleEnterKey);
+        }, 0);
     });
 
     element.classList.add('selected');
@@ -39,15 +38,39 @@ function selectApp(element) {
         }
     }
     // add event listener for Enter key
-    //document.removeEventListener('keydown', handleEnterKey);
-    document.addEventListener('keydown', handleEnterKey);
+    setTimeout(() => {
+        document.removeEventListener('keydown', handleEnterKey);
+        document.addEventListener('keydown', handleEnterKey);
+    }, 0);
 }
+
+// function to handle search results
+async function searchSystem(query){
+    const searchResults =  await window.hubbleAPI.search(query);
+    const searchResultsContainer = document.querySelector('.local-search-results');
+    searchResultsContainer.innerHTML = '';
+    const results = JSON.parse(searchResults);
+    results.forEach(result => {
+        const searchResultItem = document.createElement('div');
+        const searchResultItemTitle = document.createElement('div');
+        const searchResultItemContent = document.createElement('div');
+        searchResultItem.classList.add('local-search-results-item');
+        searchResultItemTitle.classList.add('local-search-results-item-title');
+        searchResultItemContent.classList.add('local-search-results-item-content');
+        searchResultItemTitle.textContent = result.path.split('/').pop();
+        searchResultItemContent.textContent = result.path;
+        searchResultItem.appendChild(searchResultItemTitle);
+        searchResultItem.appendChild(searchResultItemContent);
+        searchResultsContainer.appendChild(searchResultItem);
+    });
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     getAppsList();
 
-    // scrolling behaviour for arrow keys
-    const childHeight = document.querySelector('.default-item').offsetHeight;
+    // scrolling behaviour for arrow keys for apps list container
+    const appchildHeight = document.querySelector('.default-item').offsetHeight;
     const container = document.querySelector('.default-container');
     document.addEventListener('keydown', (event) => {
         if (event.key === 'ArrowDown') {
@@ -56,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const nextSibling = selected.nextElementSibling;
                 if (nextSibling) {
                     selectApp(nextSibling);
-                    container.scrollTop += childHeight;
+                    container.scrollTop += appchildHeight;
                 } 
             } else {
                 const firstItem = document.querySelector('.default-item');
@@ -73,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const previousSibling = selected.previousElementSibling;
                 if (previousSibling) {
                     selectApp(previousSibling);
-                    container.scrollTop -= childHeight;
+                    container.scrollTop -= appchildHeight;
                 }
             } else {
                 const lastItem = document.querySelector('.default-item:last-child');
@@ -82,6 +105,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+    });
+
+    // event listener for input field
+    const searchInput = document.querySelector('.search-bar');
+    searchInput.addEventListener('input', () => {
+        const defaultContainer = document.getElementsByClassName('default-container')[0];
+        const searchResults = document.getElementsByClassName('search-results-container')[0];
+        defaultContainer.style.display = 'none';
+        searchResults.style.display = 'flex';
+        searchSystem(searchInput.value);
     });
     // close the app if clicked outside the main container
     document.addEventListener('click', (event) => {
