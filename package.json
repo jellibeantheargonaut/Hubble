@@ -9,7 +9,6 @@
   "scripts": {
     "start": "electron .",
     "build-icons": "electron-icon-builder --input=resources/icon.png --output=resources/icons/appIcons",
-    "build-tray-icons": "electron-icon-builder --input=resources/icons/tray-icon.png --output=resources/icons/trayIcons",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

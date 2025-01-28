@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (event) => {
         const mainContainer = document.querySelector('.main-container');
         if (!mainContainer.contains(event.target)) {
-            window.hubbleAPI.closeApp();
+            window.hubbleAPI.hideHubble();
         }
     });
 });

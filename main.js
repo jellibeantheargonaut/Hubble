@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain } = require('electron');
+const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, globalShortcut } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const icns = require('icns');
@@ -39,6 +39,7 @@ const createWindow = () => {
         // so that html event listeners can be added
         width: 1400,
         height: 950,
+        show: false,
         transparent: true,
         frame: false,
         webPreferences: {
@@ -49,10 +50,10 @@ const createWindow = () => {
     });
 
     // setting icons
-    if(process.platform === 'darwin') {
-        const iconPath = path.join(__dirname, 'resources/icons/appIcons/icons/png/512x512.png');
-        app.dock.setIcon(iconPath);
-    }
+    //if(process.platform === 'darwin') {
+    //    const iconPath = path.join(__dirname, 'resources/icons/appIcons/icons/png/512x512.png');
+    //    app.dock.setIcon(iconPath);
+    //}
 
     mainWindow.loadFile('index.html');
 
@@ -63,11 +64,31 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
     createWindow();
+
+    // create tray icon
+    const iconPath = path.join(__dirname, 'resources/icons/appIcons/icons/png/24x24.png');
+    const trayIcon = nativeImage.createFromPath(iconPath);
+    tray = new Tray(trayIcon);
+    const contextMenu = Menu.buildFromTemplate([
+        { label: 'Hubble Settings', type: 'normal', click: openSettings },
+        { label: 'Reindex System', type: 'normal', click: reindexSystem },
+        { label: 'Show Hubble', type: 'normal', click: () => mainWindow.show() },
+        { label: 'Quit', type: 'normal', click: app.quit }
+    ]);
+    tray.setToolTip('Hubble');
+    tray.setContextMenu(contextMenu);
+    
+    // register global shortcut
+    globalShortcut.register('CommandOrControl+Shift+Space', () => {
+        mainWindow.show();
+    });
+
 });
 
 // IPC handles for the functions
-ipcMain.handle('close-app', (event) => {
-    app.quit();
+ipcMain.handle('hide-hubble', (event) => {
+    mainWindow.hide();
+    mainWindow.reload();
 });
 
 ipcMain.handle('get-apps', (event) => {
@@ -84,10 +105,12 @@ ipcMain.handle('open-app', (event, app) => {
     const appPath = path.join('/Applications/', app + '.app');
     // open the app
     execSync("open -a '" + appPath + "'");
+    mainWindow.hide();
 });
 
 ipcMain.handle('open-file', (event, file) => {
     execSync("open '" + file + "'");
+    mainWindow.hide();
 });
 
 // ipc handle for searching the system

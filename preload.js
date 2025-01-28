@@ -7,8 +7,8 @@ contextBridge.exposeInMainWorld('hubbleAPI', {
     openFile: async (filePath) => {
         return ipcRenderer.invoke('open-file', filePath);
     },
-    closeApp:  () => {
-        return ipcRenderer.invoke('close-app');
+    hideHubble:  () => {
+        return ipcRenderer.invoke('hide-hubble');
     },
     getApps:  () => {
         return ipcRenderer.invoke('get-apps');
