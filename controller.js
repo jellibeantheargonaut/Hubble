@@ -48,6 +48,11 @@ function selectApp(element) {
 async function searchSystem(query){
     const searchResults =  await window.hubbleAPI.search(query);
     const searchResultsContainer = document.querySelector('.local-search-results');
+
+    if(searchResults.message){
+        searchResultsContainer.innerHTML = searchResults.message;
+        return;
+    }
     searchResultsContainer.innerHTML = '';
     const results = JSON.parse(searchResults);
     results.forEach(result => {
@@ -61,6 +66,10 @@ async function searchSystem(query){
         searchResultItemContent.textContent = result.path;
         searchResultItem.appendChild(searchResultItemTitle);
         searchResultItem.appendChild(searchResultItemContent);
+        searchResultItem.addEventListener('click', () => {
+            searchResultItem.classList.add('selected');
+            window.hubbleAPI.openFile(result.path);
+        });
         searchResultsContainer.appendChild(searchResultItem);
     });
 }
@@ -114,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchResults = document.getElementsByClassName('search-results-container')[0];
         defaultContainer.style.display = 'none';
         searchResults.style.display = 'flex';
+        document.querySelector('.icon-container svg').style.color = 'white';
         searchSystem(searchInput.value);
     });
     // close the app if clicked outside the main container

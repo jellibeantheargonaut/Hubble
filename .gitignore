@@ -1,3 +1,9 @@
+######
+resources/font-awesome*
+.DS_Store
+**/*.DS_Store
+data/cache/*
+
 # Logs
 logs
 *.log

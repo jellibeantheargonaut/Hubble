@@ -5,7 +5,7 @@ const icns = require('icns');
 const { execSync, exec, spawn } = require('child_process');
 const sanitize = require('sanitize-filename');
 
-const { searchSystem, createDB, createTable, createIndex  } = require('./indexer');
+const { searchSystem, createDB, createTable, createIndex, reindexSystem  } = require('./indexer');
 let mainWindow;
 let tray = null;
 
@@ -84,6 +84,10 @@ ipcMain.handle('open-app', (event, app) => {
     const appPath = path.join('/Applications/', app + '.app');
     // open the app
     execSync("open -a '" + appPath + "'");
+});
+
+ipcMain.handle('open-file', (event, file) => {
+    execSync("open '" + file + "'");
 });
 
 // ipc handle for searching the system
