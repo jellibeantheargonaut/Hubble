@@ -5,33 +5,12 @@ const icns = require('icns');
 const { execSync, exec, spawn } = require('child_process');
 const sanitize = require('sanitize-filename');
 
-const { searchSystem, createDB, createTable, createIndex, reindexSystem  } = require('./indexer');
+const { searchSystem, reindexSystem, getSettings  } = require('./indexer');
 let mainWindow;
+let settingsWindow;
 let tray = null;
 
 //=============================================================
-// function to create a system files cache
-// this function will be called only once
-// to create the cache
-//=============================================================
-
-
-// creating an index for the cache
-//=============================================================
-// function to open settings window from tray icon menu
-//const openSettings = () => {
-//    const settingsWindow = new BrowserWindow({
-//        width: 800,
-//        height: 600,
-//        webPreferences: {
-//            nodeIntegration: true,
-//            contextIsolation: true,
-//            preload: path.join(__dirname, 'preload.js')
-//        }
-//    });
-//    //settingsWindow.loadFile('settings.html');
-//};
-const openSettings = () => { console.log('Settings opened'); };
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -50,10 +29,10 @@ const createWindow = () => {
     });
 
     // setting icons
-    //if(process.platform === 'darwin') {
-    //    const iconPath = path.join(__dirname, 'resources/icons/appIcons/icons/png/512x512.png');
-    //    app.dock.setIcon(iconPath);
-    //}
+    if(process.platform === 'darwin') {
+        const iconPath = path.join(__dirname, 'resources/icons/appIcons/icons/png/512x512.png');
+        app.dock.setIcon(iconPath);
+    }
 
     mainWindow.loadFile('index.html');
 
@@ -70,7 +49,6 @@ app.whenReady().then(() => {
     const trayIcon = nativeImage.createFromPath(iconPath);
     tray = new Tray(trayIcon);
     const contextMenu = Menu.buildFromTemplate([
-        { label: 'Hubble Settings', type: 'normal', click: openSettings },
         { label: 'Reindex System', type: 'normal', click: reindexSystem },
         { label: 'Show Hubble', type: 'normal', click: () => mainWindow.show() },
         { label: 'Quit', type: 'normal', click: app.quit }
@@ -113,7 +91,16 @@ ipcMain.handle('open-file', (event, file) => {
     mainWindow.hide();
 });
 
-// ipc handle for searching the system
+
+
+//ipc handles related to indexing
+//=============================================================
+// ipc handle for searching the system for files
 ipcMain.handle('search', (event, query) => {
     return searchSystem(query);
+});
+
+// ipc handle for get settings
+ipcMain.handle('get-settings', (event) => {
+    return getSettings();
 });

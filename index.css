@@ -182,6 +182,7 @@ body {
     height: 80px;
     border-radius: 10px;
     padding-top: 10px;
+    gap: 5px;
 }
 .local-search-results-item-title {
     display: flex;

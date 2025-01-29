@@ -1,6 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('hubbleAPI', {
+    // api to expose to the main window
+    //=================================================================
     openApp: async (appName) => {
         return ipcRenderer.invoke('open-app', appName);
     },

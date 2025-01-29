@@ -8,11 +8,10 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Electron Main",
-            "runtimeExecutable": "${cwd}/node_modules/.bin/electron",
-            "program": "${cwd}/main.js",
-            "cwd": "${cwd}",
+            "runtimeExecutable": "${workspaceFolder:Hubble}/node_modules/.bin/electron",
+            "program": "${workspaceFolder:Hubble}/main.js",
             "windows": {
-                "runtimeExecutable": "${cwd}/node_modules/.bin/electron.cmd"
+                "runtimeExecutable": "${workspaceFolder:Hubble}/node_modules/.bin/electron.cmd"
             },
             "env": {
                 "NODE_ENV": "development"

@@ -1,0 +1,39 @@
+## YAML settings file for Hubble indexer
+
+
+## index file path
+index_file: "~/.hubble/systemIndex.db"
+## sqlite database index table name
+index_table: systemIndex
+## sqlite database index table schema
+index_schema:
+  - name: id
+    type: INTEGER PRIMARY KEY AUTOINCREMENT
+  - name: path
+    type: TEXT
+  - name: size
+    type: INTEGER
+  - name: mtime
+    type: INTEGER
+  - name: ctime
+    type: INTEGER
+  - name: atime
+    type: INTEGER
+## More schema fields can be added as needed
+
+## index frequency in hours
+index_frequency: 60
+
+## scopes for indexing
+index_scopes:
+  - path: "~"
+    follow_symlinks: false
+## Add more scopes as needed
+
+## exclude paths
+exclude_scopes:
+  - path: ".*" # exclude hidden files and directories
+
+## watchdog scopes
+## watchdog_scopes:
+##   - path: "~"
