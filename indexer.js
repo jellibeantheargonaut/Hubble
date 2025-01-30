@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const yaml = require('yaml');
+const chokidar = require('chokidar');
 
 // read the settings from yaml file
 const defaultSettingsPath = path.join(__dirname, 'data','settings.yaml');
@@ -181,6 +182,25 @@ const searchSystem = (query) => {
         });
     });
 };
+
+
+// functions for watchdog events
+//=============================================
+
+//const watcher = chokidar.watch(settings.index_scopes.map(scope => scope.path.replace('~',os.homedir())), {
+//    ignored: /(^|[\/\\])\../,
+//    persistent: true
+//});
+//// function to handle the creation of a file in directories
+//// in the include_scopes in settings file
+//
+//watcher
+//.on('add', path => console.log(`File ${path} has been added`))
+//.on('change', path => console.log(`File ${path} has been changed`))
+//.on('unlink', path => console.log(`File ${path} has been removed`))
+//.on('addDir', path => console.log(`Directory ${path} has been added`))
+//.on('unlinkDir', path => console.log(`Directory ${path} has been removed`))
+//.on('error', error => console.error(`Watcher error: ${error}`));
 
 module.exports = {
     reindexSystem,

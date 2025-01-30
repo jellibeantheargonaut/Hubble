@@ -26,8 +26,9 @@ index_frequency: 60
 
 ## scopes for indexing
 index_scopes:
-  - path: "~"
-    follow_symlinks: false
+  #- path: "~"
+  #  follow_symlinks: false
+  - path: "~/Documents"
 ## Add more scopes as needed
 
 ## exclude paths
@@ -35,5 +36,5 @@ exclude_scopes:
   - path: ".*" # exclude hidden files and directories
 
 ## watchdog scopes
-## watchdog_scopes:
-##   - path: "~"
+watchdog_scopes:
+   - path: "~"

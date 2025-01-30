@@ -43,7 +43,6 @@ function selectApp(element) {
         document.addEventListener('keydown', handleEnterKey);
     }, 0);
 }
-
 // function to handle search results
 async function searchSystem(query){
     const searchResults =  await window.hubbleAPI.search(query);
@@ -59,10 +58,23 @@ async function searchSystem(query){
         const searchResultItem = document.createElement('div');
         const searchResultItemTitle = document.createElement('div');
         const searchResultItemContent = document.createElement('div');
+        const searchResultItemIcon = document.createElement('div');
+
         searchResultItem.classList.add('local-search-results-item');
         searchResultItemTitle.classList.add('local-search-results-item-title');
         searchResultItemContent.classList.add('local-search-results-item-content');
-        searchResultItemTitle.textContent = result.path.split('/').pop();
+        searchResultItemIcon.classList.add('local-search-results-item-icon');
+
+        const icon = document.createElement('img');
+        const fileExtension = result.path.split('.').pop();
+        icon.src =  `./resources/filetypes/${fileExtension}.png`
+        icon.onerror = (e) => {
+            e.target.src = './resources/filetypes/default.png';
+        }
+        searchResultItemIcon.appendChild(icon);
+
+        searchResultItemTitle.appendChild(searchResultItemIcon);
+        searchResultItemTitle.appendChild(document.createTextNode(result.path.split('/').pop()));
         searchResultItemContent.textContent = result.path;
         searchResultItem.appendChild(searchResultItemTitle);
         searchResultItem.appendChild(searchResultItemContent);
@@ -70,6 +82,7 @@ async function searchSystem(query){
             searchResultItem.classList.add('selected');
             window.hubbleAPI.openFile(result.path);
         });
+
         searchResultsContainer.appendChild(searchResultItem);
     });
 }
@@ -119,6 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // event listener for input field
     const searchInput = document.querySelector('.search-bar');
     searchInput.addEventListener('input', () => {
+        // first remove all selected classes
+        const selectedItems = document.querySelectorAll('.selected');
+        selectedItems.forEach(item => {
+            item.classList.remove('selected');
+            setTimeout(() => {
+                document.removeEventListener('keydown', handleEnterKey);
+            }, 0);
+        });
         const defaultContainer = document.getElementsByClassName('default-container')[0];
         const searchResults = document.getElementsByClassName('search-results-container')[0];
         defaultContainer.style.display = 'none';

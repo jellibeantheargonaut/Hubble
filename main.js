@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, globalShortcut } = require('electron');
+const { nativeTheme } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const icns = require('icns');
@@ -33,6 +34,11 @@ const createWindow = () => {
         const iconPath = path.join(__dirname, 'resources/icons/appIcons/icons/png/512x512.png');
         app.dock.setIcon(iconPath);
     }
+
+    // native theme
+    nativeTheme.on('updated', () => {
+        mainWindow.webContents.send('theme-changed', nativeTheme.shouldUseDarkColors);
+    });
 
     mainWindow.loadFile('index.html');
 

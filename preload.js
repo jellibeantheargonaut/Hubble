@@ -20,3 +20,12 @@ contextBridge.exposeInMainWorld('hubbleAPI', {
         return ipcRenderer.invoke('search', query);
     },
 });
+
+ipcRenderer.on('theme-changed', (event, isDarkMode) => {
+    if(isDarkMode){
+        document.body.setAttribute('system-theme', 'dark');
+    }
+    else{
+        document.body.setAttribute('system-theme', 'light');
+    }
+});

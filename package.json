@@ -12,6 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "chokidar": "^4.0.3",
     "electron": "^34.0.1",
     "electron-icon-builder": "^2.0.1",
     "icns": "^0.1.0",
