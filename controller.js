@@ -9,8 +9,13 @@ async function getAppsList(){
         appIconConatainer.classList.add('default-item-icon');
         const appNameContainer = document.createElement('div');
         appNameContainer.classList.add('default-item-text');
+
         const tag = document.createElement('p');
         tag.textContent = app.name;
+        const img = document.createElement('img');
+        //img.src = './resources/applications/chrome.png';
+
+        //appIconConatainer.appendChild(img);
         appNameContainer.appendChild(tag);
         appContainer.appendChild(appIconConatainer);
         appContainer.appendChild(appNameContainer);
@@ -144,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchResults = document.getElementsByClassName('search-results-container')[0];
         defaultContainer.style.display = 'none';
         searchResults.style.display = 'flex';
-        document.querySelector('.icon-container svg').style.color = 'white';
         searchSystem(searchInput.value);
     });
     // close the app if clicked outside the main container
