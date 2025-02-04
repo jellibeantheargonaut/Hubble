@@ -7,6 +7,15 @@
 
         <script src="controller.js"></script>
         <link rel="stylesheet" type="text/css" href="index.css">
+
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' ; frame-src 'self' ; img-src * ;"
+        />
+        <meta
+            http-equiv="X-Content-Security-Policy"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' ; style-src 'self' 'unsafe-inline' ; frame-src 'self' ; img-src * ;"
+        />
     </head>
     <body>
         <div class="main-container">
@@ -32,6 +41,9 @@
                     
                 </div>
             </div>
+        </div>
+        <div class="websearch-container">
+            
         </div>
     </body>
 </html>

@@ -48,6 +48,100 @@ function selectApp(element) {
         document.addEventListener('keydown', handleEnterKey);
     }, 0);
 }
+
+//=======================================================
+// auxilliary function for adding search option
+function addSearchOption(searchResultsContainer, searchQuery){
+    const searchResultItem = document.createElement('div');
+    const searchResultItemTitle = document.createElement('div');
+    const searchResultItemContent = document.createElement('div');
+    const searchResultItemIcon = document.createElement('div');
+
+    searchResultItem.classList.add('local-search-results-item');
+    searchResultItemTitle.classList.add('local-search-results-item-title');
+    searchResultItemContent.classList.add('local-search-results-item-content');
+    searchResultItemIcon.classList.add('local-search-results-item-icon');
+
+    const icon = document.createElement('img');
+    icon.src =  `./resources/filetypes/web.png`
+    icon.onerror = (e) => {
+        e.target.src = './resources/filetypes/default.png';
+    }
+    searchResultItemIcon.appendChild(icon);
+    searchResultItemTitle.appendChild(searchResultItemIcon);
+    searchResultItemTitle.appendChild(document.createTextNode(`Search for "${searchQuery}"`));
+    searchResultItemContent.textContent = `Answers from the web for "${searchQuery}"`;
+    searchResultItem.appendChild(searchResultItemTitle);
+    searchResultItem.appendChild(searchResultItemContent);
+    searchResultItem.addEventListener('click', () => {
+        searchResultItem.classList.add('selected');
+        window.hubbleAPI.searchWeb(searchQuery);
+    });
+    searchResultsContainer.appendChild(searchResultItem);
+
+    // adding an onclick event listener
+    searchResultItem.addEventListener('click', () => {
+        const webContainer = document.querySelector('.websearch-container');
+        webContainer.style.display = 'flex';
+        queryWeb(webContainer,searchQuery);
+    });
+}
+
+// function to get web search from duck duck go
+async function queryWeb(container,query){
+    const webResults = await window.hubbleAPI.searchWeb(query);
+    container.innerHTML = '';
+    webResults.results.forEach(result => {
+        // creating the divs
+        const webResultItem = document.createElement('div');
+        const webResultItemTitle = document.createElement('div');
+        const webResultItemTitleIcon = document.createElement('div');
+        const webResultItemTitleContent = document.createElement('div');
+        const webResultItemTitleContentTitle = document.createElement('div');
+        const webResultItemTitleContentHost = document.createElement('div');
+        const webResultItemContent = document.createElement('div');
+        const webResultItemContentDesc = document.createElement('div');
+
+        // adding classes
+        webResultItem.classList.add('websearch-result-item');
+        webResultItemTitle.classList.add('websearch-result-item-title');
+        webResultItemTitleIcon.classList.add('websearch-result-item-title-icon');
+        webResultItemTitleContent.classList.add('websearch-result-item-title-content');
+        webResultItemTitleContentTitle.classList.add('websearch-result-item-title-content-text');
+        webResultItemTitleContentHost.classList.add('websearch-result-item-title-content-host');
+        webResultItemContent.classList.add('websearch-result-item-content');
+        webResultItemContentDesc.classList.add('websearch-result-item-content-desc');
+
+        // adding content
+        const icon = document.createElement('img');
+        icon.src = result.icon;
+        webResultItemTitleIcon.appendChild(icon);
+        webResultItemTitleContentTitle.textContent = result.title;
+        webResultItemTitleContentHost.textContent = result.hostname;
+
+        webResultItemTitleContent.appendChild(webResultItemTitleContentTitle);
+        webResultItemTitleContent.appendChild(webResultItemTitleContentHost);
+        webResultItemTitle.appendChild(webResultItemTitleIcon);
+        webResultItemTitle.appendChild(webResultItemTitleContent);
+
+        webResultItemContentDesc.innerHTML = result.description;
+        webResultItemContent.appendChild(webResultItemContentDesc);
+
+        webResultItem.appendChild(webResultItemTitle);
+        webResultItem.appendChild(webResultItemContent);
+
+        // add event listener when clicked on the item to open link in browser
+        webResultItem.addEventListener('click', () => {
+            window.hubbleAPI.openWebLink(result.url);
+            window.hubbleAPI.hideHubble();
+        });
+
+        container.appendChild(webResultItem);
+
+    })
+}
+
+
 // function to handle search results
 async function searchSystem(query){
     const searchResults =  await window.hubbleAPI.search(query);
@@ -90,6 +184,8 @@ async function searchSystem(query){
 
         searchResultsContainer.appendChild(searchResultItem);
     });
+    // also add a web search option
+    addSearchOption(searchResultsContainer, query);
 }
 
 
@@ -151,10 +247,12 @@ document.addEventListener('DOMContentLoaded', () => {
         searchResults.style.display = 'flex';
         searchSystem(searchInput.value);
     });
-    // close the app if clicked outside the main container
+
+    // hide the app if clicked outside the main container
     document.addEventListener('click', (event) => {
         const mainContainer = document.querySelector('.main-container');
-        if (!mainContainer.contains(event.target)) {
+        if (!mainContainer.contains(event.target)
+            && !document.querySelector('.websearch-container').contains(event.target)) {
             window.hubbleAPI.hideHubble();
         }
     });

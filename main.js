@@ -2,9 +2,9 @@ const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, globalShortcut } =
 const { nativeTheme } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const icns = require('icns');
 const { execSync, exec, spawn } = require('child_process');
 const sanitize = require('sanitize-filename');
+const DDG = require('duck-duck-scrape');
 
 const { searchSystem, reindexSystem, getSettings  } = require('./indexer');
 let mainWindow;
@@ -104,6 +104,17 @@ ipcMain.handle('open-file', (event, file) => {
 // ipc handle for searching the system for files
 ipcMain.handle('search', (event, query) => {
     return searchSystem(query);
+});
+
+// ipc handle for searching the web
+ipcMain.handle('search-web', (event, query) => {
+    const webresults = DDG.search(query);
+    return webresults;
+});
+
+// ipc handle for opening web link in default browser
+ipcMain.handle('open-web-link', (event, url) => {
+    execSync("open '" + url + "'");
 });
 
 // ipc handle for get settings

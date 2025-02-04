@@ -19,6 +19,12 @@ contextBridge.exposeInMainWorld('hubbleAPI', {
     search:  (query) => {
         return ipcRenderer.invoke('search', query);
     },
+    searchWeb:  (query) => {
+        return ipcRenderer.invoke('search-web', query);
+    },
+    openWebLink: (url) => {
+        return ipcRenderer.invoke('open-web-link', url);
+    },
 });
 
 ipcRenderer.on('theme-changed', (event, isDarkMode) => {

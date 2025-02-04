@@ -8,10 +8,10 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Electron Main",
-            "runtimeExecutable": "${workspaceFolder:Hubble}/node_modules/.bin/electron",
-            "program": "${workspaceFolder:Hubble}/main.js",
+            "runtimeExecutable": "/Users/jellibean/Documents/Github/Hubble/node_modules/.bin/electron",
+            "program": "/Users/jellibean/Documents/Github/Hubble/main.js",
             "windows": {
-                "runtimeExecutable": "${workspaceFolder:Hubble}/node_modules/.bin/electron.cmd"
+                "runtimeExecutable": "/Users/jellibean/Documents/Github/Hubble/node_modules/.bin/electron.cmd"
             },
             "env": {
                 "NODE_ENV": "development"

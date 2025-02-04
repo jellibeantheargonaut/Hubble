@@ -13,9 +13,11 @@
   },
   "devDependencies": {
     "chokidar": "^4.0.3",
+    "duck-duck-scrape": "^2.2.7",
     "electron": "^34.0.1",
     "electron-icon-builder": "^2.0.1",
     "icns": "^0.1.0",
+    "plist": "^3.1.0",
     "sanitize-filename": "^1.6.3",
     "sqlite3": "^5.1.7",
     "yaml": "^2.7.0"
